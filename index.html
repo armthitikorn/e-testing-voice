@@ -1,67 +1,188 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>แบบทดสอบเสียง</title>
+    <title>แบบทดสอบเสียงสำหรับพนักงาน</title>
     <style>
-        body {
-            font-family: 'Tahoma', sans-serif;
-            background-color: #f0f8ff;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #downloadLink {
-            display: none;
-            margin-top: 20px;
-            font-size: 16px;
-        }
+        body { font-family: sans-serif; padding: 20px; background-color: #f9f9f9; }
+        h1 { text-align: center; }
+        .question { margin-bottom: 30px; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        button { margin-right: 10px; padding: 8px 12px; }
+        a { display: block; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <h1>แบบทดสอบ: อัดเสียงคำตอบ</h1>
-    <p>กรุณากดปุ่มเพื่อเริ่มอัดเสียงคำตอบของคุณ</p>
-    <button id="startBtn">🎙️ เริ่มอัดเสียง</button>
-    <button id="stopBtn">⏹️ หยุดอัดเสียง</button>
-    <br>
-    <a id="downloadLink">ดาวน์โหลดเสียงที่อัด</a>
+    <h1>แบบทดสอบเสียงสำหรับพนักงาน</h1>
+<script>
+let recorders = [];
+let audioChunksList = [];
 
-    <script>
-        let mediaRecorder;
-        let audioChunks = [];
+    <div class="question">
+        <label>คำถามที่ 1 ประกันยังไม่สนใจ: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(1)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(1)">หยุดอัดเสียง</button>
+        <a id="downloadLink1" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 2 มีเยอะแล้วไม่อยากเพิ่ม: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(2)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(2)">หยุดอัดเสียง</button>
+        <a id="downloadLink2" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 3 เอาข้อมูลมาจากไหน: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(3)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(3)">หยุดอัดเสียง</button>
+        <a id="downloadLink3" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 4 ประกันก็เหมือนกันหมด: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(4)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(4)">หยุดอัดเสียง</button>
+        <a id="downloadLink4" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 5 ขอเอกสารมาดูก่อนได้ไหม: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(5)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(5)">หยุดอัดเสียง</button>
+        <a id="downloadLink5" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 6: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(6)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(6)">หยุดอัดเสียง</button>
+        <a id="downloadLink6" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 7: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(7)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(7)">หยุดอัดเสียง</button>
+        <a id="downloadLink7" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 8: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(8)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(8)">หยุดอัดเสียง</button>
+        <a id="downloadLink8" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 9: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(9)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(9)">หยุดอัดเสียง</button>
+        <a id="downloadLink9" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 10: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(10)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(10)">หยุดอัดเสียง</button>
+        <a id="downloadLink10" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 11: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(11)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(11)">หยุดอัดเสียง</button>
+        <a id="downloadLink11" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 12: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(12)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(12)">หยุดอัดเสียง</button>
+        <a id="downloadLink12" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 13: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(13)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(13)">หยุดอัดเสียง</button>
+        <a id="downloadLink13" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 14: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(14)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(14)">หยุดอัดเสียง</button>
+        <a id="downloadLink14" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 15: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(15)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(15)">หยุดอัดเสียง</button>
+        <a id="downloadLink15" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 16: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(16)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(16)">หยุดอัดเสียง</button>
+        <a id="downloadLink16" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 17: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(17)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(17)">หยุดอัดเสียง</button>
+        <a id="downloadLink17" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 18: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(18)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(18)">หยุดอัดเสียง</button>
+        <a id="downloadLink18" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 19: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(19)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(19)">หยุดอัดเสียง</button>
+        <a id="downloadLink19" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+    <div class="question">
+        <label>คำถามที่ 20: กรุณาตอบคำถามด้วยเสียง</label><br>
+        <button onclick="startRecording(20)">เริ่มอัดเสียง</button>
+        <button onclick="stopRecording(20)">หยุดอัดเสียง</button>
+        <a id="downloadLink20" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
+    </div>
+    
+<script>
+async function startRecording(index) {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const recorder = new MediaRecorder(stream);
+    const audioChunks = [];
+    recorder.ondataavailable = e => audioChunks.push(e.data);
+    recorder.start();
+    recorders[index] = recorder;
+    audioChunksList[index] = audioChunks;
+}
 
-        document.getElementById('startBtn').onclick = async () => {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            mediaRecorder.start();
-
-            mediaRecorder.ondataavailable = e => {
-                audioChunks.push(e.data);
-            };
-        };
-
-        document.getElementById('stopBtn').onclick = () => {
-            mediaRecorder.stop();
-            mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const downloadLink = document.getElementById('downloadLink');
-                downloadLink.href = audioUrl;
-                downloadLink.download = 'voice_answer.webm';
-                downloadLink.style.display = 'inline';
-                downloadLink.textContent = '📥 ดาวน์โหลดเสียงที่อัด';
-            };
-        };
-    </script>
+function stopRecording(index) {
+    const recorder = recorders[index];
+    const audioChunks = audioChunksList[index];
+    recorder.stop();
+    recorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const downloadLink = document.getElementById('downloadLink' + index);
+        downloadLink.href = audioUrl;
+        downloadLink.download = 'answer_' + index + '.webm';
+        downloadLink.style.display = 'block';
+        downloadLink.textContent = 'ดาวน์โหลดเสียงคำตอบที่ ' + index;
+    };
+}
+</script>
 </body>
 </html>
+
