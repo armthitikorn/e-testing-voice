@@ -39,55 +39,57 @@
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen">
-    <div class="container-card">
-        <h1 class="text-3xl font-bold text-center mb-6 text-gray-900">ศูนย์วิเคราะห์เสียง 🎙️</h1>
-        <p class="text-center text-gray-600 mb-8">
-            ค้นหาและจัดการไฟล์เสียงเพื่อการวิเคราะห์ผลการปฏิบัติงาน
-        </p>
+    <div id="appContainer" class="hidden"> <!-- ซ่อนเนื้อหาทั้งหมดไว้ก่อน -->
+        <div class="container-card">
+            <h1 class="text-3xl font-bold text-center mb-6 text-gray-900">ศูนย์วิเคราะห์เสียง 🎙️</h1>
+            <p class="text-center text-gray-600 mb-8">
+                ค้นหาและจัดการไฟล์เสียงเพื่อการวิเคราะห์ผลการปฏิบัติงาน
+            </p>
 
-        <!-- Loading and Error Messages -->
-        <div id="loading" class="hidden flex justify-center items-center mb-4 p-3 bg-blue-100 text-blue-800 rounded-lg">
-            <div class="loading-spinner mr-3"></div>
-            กำลังโหลด...
-        </div>
-        <div id="message" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
-
-        <!-- Authentication Status -->
-        <div id="authStatus" class="text-center text-sm text-gray-500 mb-4">
-            <span id="userIdDisplay"></span>
-        </div>
-
-        <hr class="my-8 border-t-2 border-gray-200">
-
-        <!-- Search Section -->
-        <div class="mb-8 p-6 bg-purple-50 rounded-lg shadow-inner">
-            <h2 class="text-xl font-semibold mb-4 text-purple-800">ค้นหาไฟล์เสียง</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <input type="email" id="searchEmail" placeholder="ค้นหาด้วย E-mail (เช่น user@example.com)" class="input-field">
-                <input type="date" id="searchDate" class="input-field">
+            <!-- Loading and Error Messages -->
+            <div id="loading" class="hidden flex justify-center items-center mb-4 p-3 bg-blue-100 text-blue-800 rounded-lg">
+                <div class="loading-spinner mr-3"></div>
+                กำลังโหลด...
             </div>
-            <div class="flex justify-center">
-                <button id="searchButton" class="btn-primary">ค้นหาไฟล์</button>
+            <div id="message" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+
+            <!-- Authentication Status -->
+            <div id="authStatus" class="text-center text-sm text-gray-500 mb-4">
+                <span id="userIdDisplay"></span>
             </div>
-        </div>
 
-        <!-- Search Results Section -->
-        <div class="p-6 bg-indigo-50 rounded-lg shadow-inner">
-            <h2 class="text-xl font-semibold mb-4 text-indigo-800">ผลการค้นหา</h2>
-            <div id="searchResultsContainer" class="space-y-3">
-                <p class="text-gray-500" id="noSearchResultsMessage">ไม่มีผลการค้นหา.</p>
-                <!-- Search results will be listed here -->
+            <hr class="my-8 border-t-2 border-gray-200">
+
+            <!-- Search Section -->
+            <div class="mb-8 p-6 bg-purple-50 rounded-lg shadow-inner">
+                <h2 class="text-xl font-semibold mb-4 text-purple-800">ค้นหาไฟล์เสียง</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <input type="email" id="searchEmail" placeholder="ค้นหาด้วย E-mail (เช่น user@example.com)" class="input-field">
+                    <input type="date" id="searchDate" class="input-field">
+                </div>
+                <div class="flex justify-center">
+                    <button id="searchButton" class="btn-primary">ค้นหาไฟล์</button>
+                </div>
             </div>
-        </div>
 
-        <hr class="my-8 border-t-2 border-gray-200">
+            <!-- Search Results Section -->
+            <div class="p-6 bg-indigo-50 rounded-lg shadow-inner">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-800">ผลการค้นหา</h2>
+                <div id="searchResultsContainer" class="space-y-3">
+                    <p class="text-gray-500" id="noSearchResultsMessage">ไม่มีผลการค้นหา.</p>
+                    <!-- Search results will be listed here -->
+                </div>
+            </div>
 
-        <!-- Files from 'submissions_part1' Section -->
-        <div class="p-6 bg-green-50 rounded-lg shadow-inner">
-            <h2 class="text-xl font-semibold mb-4 text-green-800">ไฟล์เสียงทั้งหมด</h2>
-            <div id="submissionPart1FilesContainer" class="space-y-3">
-                <p class="text-gray-500" id="noSubmissionPart1FilesMessage">ไม่มีไฟล์เสียง.</p>
-                <!-- Files from submissions_part1 will be listed here -->
+            <hr class="my-8 border-t-2 border-gray-200">
+
+            <!-- Files from 'submissions_part1' Section -->
+            <div class="p-6 bg-green-50 rounded-lg shadow-inner">
+                <h2 class="text-xl font-semibold mb-4 text-green-800">ไฟล์เสียงทั้งหมด</h2>
+                <div id="submissionPart1FilesContainer" class="space-y-3">
+                    <p class="text-gray-500" id="noSubmissionPart1FilesMessage">ไม่มีไฟล์เสียง.</p>
+                    <!-- Files from submissions_part1 will be listed here -->
+                </div>
             </div>
         </div>
     </div>
@@ -95,7 +97,7 @@
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
@@ -109,6 +111,7 @@
         let allSubmissionFiles = []; // To store all files for client-side filtering
 
         // DOM elements
+        const appContainer = document.getElementById('appContainer');
         const loadingElement = document.getElementById('loading');
         const messageElement = document.getElementById('message');
         const userIdDisplay = document.getElementById('userIdDisplay');
@@ -238,22 +241,23 @@
                 // Listen for authentication state changes
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
+                        // User is signed in, display content
                         currentUserId = user.uid;
                         userIdDisplay.textContent = `ผู้ใช้ ID: ${currentUserId}`;
                         console.log("Firebase initialized and user authenticated:", currentUserId);
-                        // Once authenticated, load all files from submissions_part1
+                        appContainer.classList.remove('hidden'); // แสดงเนื้อหา
                         await fetchSubmissionPart1Files();
                         hideLoading();
                         isAuthReady = true;
                     } else {
-                        currentUserId = null;
-                        userIdDisplay.textContent = 'กำลังเข้าสู่ระบบ...';
-                        console.log("User not authenticated, signing in anonymously.");
-                        // สำหรับ GitHub Pages หรือสภาพแวดล้อมที่ไม่ใช่ Canvas จะใช้ signInAnonymously() เสมอ
-                        // เพื่อหลีกเลี่ยงข้อผิดพลาดที่เกิดจาก __initial_auth_token ที่ไม่มีอยู่จริง
-                        await signInAnonymously(auth);
+                        // User is signed out, redirect to login page
+                        console.log("User is signed out. Redirecting to login page.");
+                        // ตรวจสอบว่าไม่ได้อยู่ในหน้า login.html อยู่แล้วเพื่อป้องกัน loop การ redirect
+                        if (!window.location.pathname.includes('login.html')) {
+                            window.location.href = 'login.html'; // เปลี่ยนเส้นทางไปยังหน้า login.html
+                        }
                         hideLoading();
-                        isAuthReady = true;
+                        isAuthReady = false;
                     }
                 });
 
