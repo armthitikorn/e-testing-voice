@@ -1,235 +1,396 @@
 <!DOCTYPE html>
-
 <html lang="th">
 <head>
-<meta charset="utf-8"/>
-<title>แบบทดสอบเสียงสำหรับพนักงานขายประกัน</title>
-<style>
-        body { font-family: sans-serif; padding: 20px; background-color: #f0f8ff; }
-        h1 { text-align: center; }
-        .section-title { font-size: 18px; margin-top: 30px; color: #333; }
-        .question { margin-bottom: 25px; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-        button { margin-right: 10px; padding: 8px 12px; }
-        a { display: block; margin-top: 10px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ศูนย์วิเคราะห์เสียง</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            @apply bg-gray-100 text-gray-800;
+        }
+        .container-card {
+            @apply bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl mx-auto my-10;
+        }
+        .btn-primary {
+            @apply bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out font-medium shadow-md;
+        }
+        .btn-danger {
+            @apply bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-300 ease-in-out text-sm;
+        }
+        .input-field {
+            @apply w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #2563eb;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body><div>ชื่อผู้ทำแบบทดสอบ: <input id="username" placeholder="กรอกชื่อของคุณ" type="text"/></div>
-<h1>แบบทดสอบเสียงสำหรับพนักงานขายประกัน</h1>
-<div class="section-title">คำถามก่อนปิดการขาย (ต้นสาย)</div>
-<div class="question">
-<label>คำถามที่ 1: ขอบคุณครับ แต่ตอนนี้ยังไม่สนใจประกัน</label><br/>
-<button onclick="startRecording(1)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(1)">หยุดอัดเสียง</button>
-<a id="downloadLink1" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 2: ขอเวลาคิดดูก่อนครับ</label><br/>
-<button onclick="startRecording(2)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(2)">หยุดอัดเสียง</button>
-<a id="downloadLink2" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 3: ยังไม่แน่ใจว่าประกันนี้เหมาะกับผมหรือเปล่า</label><br/>
-<button onclick="startRecording(3)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(3)">หยุดอัดเสียง</button>
-<a id="downloadLink3" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 4: ขอปรึกษาครอบครัวก่อนครับ</label><br/>
-<button onclick="startRecording(4)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(4)">หยุดอัดเสียง</button>
-<a id="downloadLink4" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 5: ตอนนี้มีประกันอยู่แล้วครับ</label><br/>
-<button onclick="startRecording(5)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(5)">หยุดอัดเสียง</button>
-<a id="downloadLink5" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 6: ขอข้อมูลเพิ่มเติมก่อนตัดสินใจครับ</label><br/>
-<button onclick="startRecording(6)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(6)">หยุดอัดเสียง</button>
-<a id="downloadLink6" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 7: ยังไม่สะดวกคุยตอนนี้ครับ</label><br/>
-<button onclick="startRecording(7)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(7)">หยุดอัดเสียง</button>
-<a id="downloadLink7" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 8: ขอเปรียบเทียบกับบริษัทอื่นก่อนครับ</label><br/>
-<button onclick="startRecording(8)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(8)">หยุดอัดเสียง</button>
-<a id="downloadLink8" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 9: ยังไม่เข้าใจเงื่อนไขทั้งหมดครับ</label><br/>
-<button onclick="startRecording(9)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(9)">หยุดอัดเสียง</button>
-<a id="downloadLink9" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 10: ขอให้ส่งรายละเอียดทางอีเมลก่อนครับ</label><br/>
-<button onclick="startRecording(10)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(10)">หยุดอัดเสียง</button>
-<a id="downloadLink10" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="section-title">คำถามหลังปิดการขาย</div>
-<div class="question">
-<label>คำถามที่ 11: ขอเปลี่ยนใจไม่ทำประกันแล้วครับ</label><br/>
-<button onclick="startRecording(11)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(11)">หยุดอัดเสียง</button>
-<a id="downloadLink11" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 12: รู้สึกว่าค่าเบี้ยแพงเกินไปครับ</label><br/>
-<button onclick="startRecording(12)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(12)">หยุดอัดเสียง</button>
-<a id="downloadLink12" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 13: พบว่ามีเงื่อนไขที่ไม่ตรงกับที่ตกลงไว้</label><br/>
-<button onclick="startRecording(13)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(13)">หยุดอัดเสียง</button>
-<a id="downloadLink13" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 14: ขอคืนเงินครับ</label><br/>
-<button onclick="startRecording(14)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(14)">หยุดอัดเสียง</button>
-<a id="downloadLink14" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 15: ไม่สะดวกชำระเงินตอนนี้ครับ</label><br/>
-<button onclick="startRecording(15)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(15)">หยุดอัดเสียง</button>
-<a id="downloadLink15" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 16: ขอเลื่อนการเริ่มต้นกรมธรรม์ครับ</label><br/>
-<button onclick="startRecording(16)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(16)">หยุดอัดเสียง</button>
-<a id="downloadLink16" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 17: มีข้อสงสัยเกี่ยวกับความคุ้มครองครับ</label><br/>
-<button onclick="startRecording(17)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(17)">หยุดอัดเสียง</button>
-<a id="downloadLink17" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 18: ต้องการยกเลิกกรมธรรม์ครับ</label><br/>
-<button onclick="startRecording(18)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(18)">หยุดอัดเสียง</button>
-<a id="downloadLink18" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 19: พบว่ามีประกันอื่นที่คุ้มค่ากว่า</label><br/>
-<button onclick="startRecording(19)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(19)">หยุดอัดเสียง</button>
-<a id="downloadLink19" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<div class="question">
-<label>คำถามที่ 20: ขอให้ติดต่อกลับภายหลังครับ</label><br/>
-<button onclick="startRecording(20)">เริ่มอัดเสียง</button>
-<button onclick="stopRecording(20)">หยุดอัดเสียง</button>
-<a id="downloadLink20" style="display:none;">ดาวน์โหลดเสียงคำตอบ</a>
-</div>
-<script>
-let recorders = [];
-let audioChunksList = [];
+<body class="flex items-center justify-center min-h-screen">
+    <div class="container-card">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-900">ศูนย์วิเคราะห์เสียง 🎙️</h1>
+        <p class="text-center text-gray-600 mb-8">
+            ค้นหาและจัดการไฟล์เสียงเพื่อการวิเคราะห์ผลการปฏิบัติงาน
+        </p>
 
-async function startRecording(index) {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const recorder = new MediaRecorder(stream);
-    const audioChunks = [];
-    recorder.ondataavailable = e => audioChunks.push(e.data);
-    recorder.start();
-    recorders[index] = recorder;
-    audioChunksList[index] = audioChunks;
-}
+        <!-- Loading and Error Messages -->
+        <div id="loading" class="hidden flex justify-center items-center mb-4 p-3 bg-blue-100 text-blue-800 rounded-lg">
+            <div class="loading-spinner mr-3"></div>
+            กำลังโหลด...
+        </div>
+        <div id="message" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
 
-function stopRecording(index) {
-    const recorder = recorders[index];
-    const audioChunks = audioChunksList[index];
-    recorder.stop();
-    recorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const downloadLink = document.getElementById('downloadLink' + index);
-        downloadLink.href = audioUrl;
-        downloadLink.download = 'answer_' + index + '.webm';
-        downloadLink.style.display = 'block';
-        downloadLink.textContent = 'ดาวน์โหลดเสียงคำตอบที่ ' + index;
-    };
-}
-</script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+        <!-- Authentication Status -->
+        <div id="authStatus" class="text-center text-sm text-gray-500 mb-4">
+            <span id="userIdDisplay"></span>
+        </div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyA4OrZERUoxWPiShCEWVvz1MK9cYGO3_K8",
-    authDomain: "new-record-3ccd6.firebaseapp.com",
-    projectId: "new-record-3ccd6",
-    storageBucket: "new-record-3ccd6.appspot.com",
-    messagingSenderId: "1065863160189",
-    appId: "1:1065863160189:web:25313e55b0733f5e126c14",
-    measurementId: "G-JW6N2HYR58"
-  };
+        <hr class="my-8 border-t-2 border-gray-200">
 
-  const app = initializeApp(firebaseConfig);
-  const storage = getStorage(app);
+        <!-- Search Section -->
+        <div class="mb-8 p-6 bg-purple-50 rounded-lg shadow-inner">
+            <h2 class="text-xl font-semibold mb-4 text-purple-800">ค้นหาไฟล์เสียง</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <input type="email" id="searchEmail" placeholder="ค้นหาด้วย E-mail (เช่น user@example.com)" class="input-field">
+                <input type="date" id="searchDate" class="input-field">
+            </div>
+            <div class="flex justify-center">
+                <button id="searchButton" class="btn-primary">ค้นหาไฟล์</button>
+            </div>
+        </div>
 
-  let recorders = [];
-  let audioChunksList = [];
+        <!-- Search Results Section -->
+        <div class="p-6 bg-indigo-50 rounded-lg shadow-inner">
+            <h2 class="text-xl font-semibold mb-4 text-indigo-800">ผลการค้นหา</h2>
+            <div id="searchResultsContainer" class="space-y-3">
+                <p class="text-gray-500" id="noSearchResultsMessage">ไม่มีผลการค้นหา.</p>
+                <!-- Search results will be listed here -->
+            </div>
+        </div>
 
-  window.startRecording = async function(index) {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const recorder = new MediaRecorder(stream);
-    const audioChunks = [];
-    recorder.ondataavailable = e => audioChunks.push(e.data);
-    recorder.start();
-    recorders[index] = recorder;
-    audioChunksList[index] = audioChunks;
-  }
+        <hr class="my-8 border-t-2 border-gray-200">
 
-  window.stopRecording = function(index) {
-    const recorder = recorders[index];
-    const audioChunks = audioChunksList[index];
-    recorder.stop();
-    recorder.onstop = async () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const downloadLink = document.getElementById('downloadLink' + index);
-      downloadLink.href = audioUrl;
-      downloadLink.download = 'answer_' + index + '.webm';
-      downloadLink.style.display = 'block';
-      downloadLink.textContent = 'ดาวน์โหลดเสียงคำตอบที่ ' + index;
+        <!-- Files from 'submissions_part1' Section -->
+        <div class="p-6 bg-green-50 rounded-lg shadow-inner">
+            <h2 class="text-xl font-semibold mb-4 text-green-800">ไฟล์เสียงทั้งหมด</h2>
+            <div id="submissionPart1FilesContainer" class="space-y-3">
+                <p class="text-gray-500" id="noSubmissionPart1FilesMessage">ไม่มีไฟล์เสียง.</p>
+                <!-- Files from submissions_part1 will be listed here -->
+            </div>
+        </div>
+    </div>
 
-      const storageRef = ref(storage, 'answers/answer_' + index + '.webm');
-      await uploadBytes(storageRef, audioBlob);
-    };
-  }
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-document.getElementById("downloadAllBtn").onclick = async () => {
-    const zip = new JSZip();
-    const username = document.getElementById("username").value || "anonymous";
-    for (let i = 1; i <= 20; i++) {
-        const link = document.getElementById("downloadLink" + i);
-        if (link && link.href && link.href.startsWith("blob:")) {
-            const response = await fetch(link.href);
-            const blob = await response.blob();
-            zip.file(username + "_answer_" + i + ".webm", blob);
+        // Initialize Firebase variables
+        let app;
+        let auth;
+        let db;
+        let storage;
+        let currentUserId = null;
+        let isAuthReady = false; // Flag to indicate if auth state has been checked
+        let allSubmissionFiles = []; // To store all files for client-side filtering
+
+        // DOM elements
+        const loadingElement = document.getElementById('loading');
+        const messageElement = document.getElementById('message');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+
+        // Submissions_part1 Section DOM
+        const submissionPart1FilesContainer = document.getElementById('submissionPart1FilesContainer');
+        const noSubmissionPart1FilesMessage = document.getElementById('noSubmissionPart1FilesMessage');
+
+        // Search Section DOM
+        const searchEmailInput = document.getElementById('searchEmail');
+        const searchDateInput = document.getElementById('searchDate');
+        const searchButton = document.getElementById('searchButton');
+        const searchResultsContainer = document.getElementById('searchResultsContainer');
+        const noSearchResultsMessage = document.getElementById('noSearchResultsMessage');
+
+        // Display message function
+        function showMessage(msg, type = 'info') {
+            messageElement.textContent = msg;
+            messageElement.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800', 'bg-yellow-100', 'text-yellow-800', 'bg-blue-100', 'text-blue-800');
+            if (type === 'error') {
+                messageElement.classList.add('bg-red-100', 'text-red-800');
+            } else if (type === 'success') {
+                messageElement.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'warning') {
+                messageElement.classList.add('bg-yellow-100', 'text-yellow-800');
+            } else { // info
+                messageElement.classList.add('bg-blue-100', 'text-blue-800');
+            }
+            messageElement.classList.remove('hidden');
         }
-    }
-    const content = await zip.generateAsync({ type: "blob" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(content);
-    a.download = username + "_voice_answers.zip";
-    a.click();
-};
-</script><button id="downloadAllBtn">📥 ดาวน์โหลดไฟล์เสียงทั้งหมด (ZIP)</button></body>
+
+        // Hide message function
+        function hideMessage() {
+            messageElement.classList.add('hidden');
+        }
+
+        // Show loading spinner
+        function showLoading() {
+            loadingElement.classList.remove('hidden');
+        }
+
+        // Hide loading spinner
+        function hideLoading() {
+            loadingElement.classList.add('hidden');
+        }
+
+        // Helper to format Firestore Timestamp
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return 'N/A';
+            if (timestamp.toDate) { // Check if it's a Firestore Timestamp object
+                const date = timestamp.toDate();
+                return date.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+            }
+            // Fallback for other date formats if necessary
+            const date = new Date(timestamp);
+            if (isNaN(date.getTime())) return 'N/A'; // Invalid date
+            return date.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+        }
+
+        // Render file list (for both main display and search results)
+        function renderFiles(container, files, noFilesMessageElement) {
+            container.innerHTML = ''; // Clear previous content
+            if (files.length === 0) {
+                noFilesMessageElement.classList.remove('hidden');
+            } else {
+                noFilesMessageElement.classList.add('hidden');
+                files.forEach((file) => {
+                    const data = file.data;
+                    const documentId = file.id;
+
+                    // Prioritize 'question' or a generic title if 'text' is missing
+                    const displayTitle = data.question || data.text || 'ไม่มีคำอธิบาย';
+                    const displayEmail = data.email || 'ไม่มี E-mail';
+                    const displayTimestamp = formatTimestamp(data.timestamp);
+                    const audioUrl = data.audioUrl;
+
+                    if (audioUrl) {
+                        const fileItem = document.createElement('div');
+                        fileItem.classList.add('flex', 'flex-col', 'sm:flex-row', 'items-start', 'sm:items-center', 'justify-between', 'p-4', 'bg-white', 'rounded-lg', 'shadow-sm', 'border', 'border-gray-200');
+                        fileItem.innerHTML = `
+                            <div class="flex-grow mb-2 sm:mb-0">
+                                <p class="text-gray-900 font-semibold">${displayTitle}</p>
+                                <p class="text-sm text-gray-700"><strong>E-mail:</strong> ${displayEmail}</p>
+                                <p class="text-sm text-gray-700"><strong>วันที่ส่ง:</strong> ${displayTimestamp}</p>
+                            </div>
+                            <div class="flex space-x-2 flex-shrink-0">
+                                <a href="${audioUrl}" target="_blank" download="${displayTitle}.mp4" class="btn-primary">ดาวน์โหลด</a>
+                                <button data-doc-id="${documentId}" data-audio-url="${audioUrl}" class="btn-danger delete-submission-btn">ลบ</button>
+                            </div>
+                        `;
+                        container.appendChild(fileItem);
+                    }
+                });
+            }
+        }
+
+        // Initialize Firebase and set up authentication
+        async function initializeFirebase() {
+            showLoading();
+            try {
+                // Get Firebase config and app ID from global variables
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+                if (Object.keys(firebaseConfig).length === 0) {
+                    throw new Error("Firebase configuration is missing or empty.");
+                }
+
+                // Initialize Firebase app
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                storage = getStorage(app);
+
+                // Listen for authentication state changes
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        userIdDisplay.textContent = `ผู้ใช้ ID: ${currentUserId}`;
+                        console.log("Firebase initialized and user authenticated:", currentUserId);
+                        // Once authenticated, load all files from submissions_part1
+                        await fetchSubmissionPart1Files();
+                        hideLoading();
+                        isAuthReady = true;
+                    } else {
+                        currentUserId = null;
+                        userIdDisplay.textContent = 'กำลังเข้าสู่ระบบ...';
+                        console.log("User not authenticated, signing in anonymously.");
+                        // Attempt to sign in with custom token if available, otherwise anonymously
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                        hideLoading();
+                        isAuthReady = true;
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error initializing Firebase or during authentication:", error);
+                showMessage(`ข้อผิดพลาดในการเริ่มต้น Firebase: ${error.message}`, 'error');
+                hideLoading();
+            }
+        }
+
+        // Function to fetch and display files from 'submissions_part1'
+        async function fetchSubmissionPart1Files() {
+            if (!isAuthReady || !currentUserId) {
+                console.log("Auth not ready or user not logged in for fetching submissions_part1 files.");
+                return;
+            }
+
+            showLoading();
+            allSubmissionFiles = []; // Clear previous data
+            try {
+                // Query the 'submissions_part1' collection
+                const q = collection(db, 'submissions_part1');
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        allSubmissionFiles.push({ id: doc.id, data: doc.data() });
+                    });
+                }
+                renderFiles(submissionPart1FilesContainer, allSubmissionFiles, noSubmissionPart1FilesMessage);
+            } catch (error) {
+                console.error("Error fetching files from submissions_part1:", error);
+                showMessage(`ข้อผิดพลาดในการดึงไฟล์เสียงทั้งหมด: ${error.message}`, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Function to delete a file from 'submissions_part1'
+        async function deleteSubmissionPart1File(docId, audioUrl) {
+            // Using browser's confirm, replace with custom modal if needed
+            if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบไฟล์นี้จาก Firestore และจาก Storage (ถ้าเป็นไปได้)?')) {
+                return;
+            }
+
+            if (!isAuthReady || !currentUserId) {
+                showMessage('คุณไม่ได้รับอนุญาตให้ลบไฟล์', 'error');
+                return;
+            }
+
+            showLoading();
+            try {
+                // Attempt to delete from Firebase Storage
+                // WARNING: This assumes audioUrl is the storage path relative to the bucket root.
+                // If your Storage rules don't allow writing/deleting at this path for the current user,
+                // this operation will fail, but the Firestore document will still be deleted.
+                try {
+                    // Extract path from full download URL if it's a typical Firebase Storage URL
+                    // Example: https://firebasestorage.googleapis.com/v0/b/project.appspot.com/o/audios%2Fuid%2Ffilename.mp4?...
+                    const url = new URL(audioUrl);
+                    const pathWithoutToken = url.pathname.split('/o/')[1]; // Get 'audios%2Fuid%2Ffilename.mp4'
+                    const decodedPath = decodeURIComponent(pathWithoutToken); // Decode 'audios/uid/filename.mp4'
+
+                    const fileRef = ref(storage, decodedPath);
+                    await deleteObject(fileRef);
+                    showMessage('ไฟล์ถูกลบจาก Storage แล้ว', 'success');
+                } catch (storageError) {
+                    console.warn("Could not delete file from Storage (potential permissions issue or file not found in expected path):", storageError.message);
+                    showMessage(`ข้อควรระวัง: ไม่สามารถลบไฟล์จาก Storage ได้ อาจเกิดจากข้อจำกัดสิทธิ์หรือเส้นทางไฟล์ไม่ถูกต้อง (${storageError.message}) แต่ข้อมูลเมตาใน Firestore จะถูกลบ`, 'warning');
+                }
+
+                // Delete document from Firestore 'submissions_part1'
+                await deleteDoc(doc(db, 'submissions_part1', docId));
+
+                showMessage('ไฟล์ถูกลบเรียบร้อยแล้ว!', 'success');
+                await fetchSubmissionPart1Files(); // Refresh the list
+                searchResultsContainer.innerHTML = ''; // Clear search results after deletion
+                noSearchResultsMessage.classList.remove('hidden');
+            } catch (error) {
+                console.error("Error deleting file:", error);
+                showMessage(`ข้อผิดพลาดในการลบไฟล์: ${error.message}`, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Function to search for audio files
+        async function searchAudio() {
+            if (!isAuthReady || !currentUserId) {
+                showMessage('กรุณารอการตรวจสอบสิทธิ์ผู้ใช้ก่อน', 'warning');
+                return;
+            }
+
+            const searchEmail = searchEmailInput.value.toLowerCase().trim();
+            const searchDateStr = searchDateInput.value; // YYYY-MM-DD format
+
+            if (!searchEmail && !searchDateStr) {
+                showMessage('กรุณาป้อน E-mail หรือเลือกวันที่เพื่อค้นหา', 'warning');
+                return;
+            }
+
+            showLoading();
+            let filteredFiles = allSubmissionFiles;
+
+            // Filter by Email
+            if (searchEmail) {
+                filteredFiles = filteredFiles.filter(file => {
+                    const email = file.data.email ? file.data.email.toLowerCase() : '';
+                    return email.includes(searchEmail);
+                });
+            }
+
+            // Filter by Date
+            if (searchDateStr) {
+                const searchDate = new Date(searchDateStr); // This is the start of the day in local time
+                const searchDateStart = new Date(searchDate.getFullYear(), searchDate.getMonth(), searchDate.getDate(), 0, 0, 0, 0);
+                const searchDateEnd = new Date(searchDate.getFullYear(), searchDate.getMonth(), searchDate.getDate(), 23, 59, 59, 999);
+
+                filteredFiles = filteredFiles.filter(file => {
+                    if (file.data.timestamp && file.data.timestamp.toDate) {
+                        const fileTimestamp = file.data.timestamp.toDate();
+                        return fileTimestamp >= searchDateStart && fileTimestamp <= searchDateEnd;
+                    }
+                    return false;
+                });
+            }
+
+            renderFiles(searchResultsContainer, filteredFiles, noSearchResultsMessage);
+            hideLoading();
+        }
+
+        // Event Listeners
+        searchButton.addEventListener('click', searchAudio);
+
+        // Event delegation for delete buttons in 'submissions_part1' section
+        submissionPart1FilesContainer.addEventListener('click', (event) => {
+            if (event.target.classList.contains('delete-submission-btn')) {
+                const docId = event.target.dataset.docId;
+                const audioUrl = event.target.dataset.audioUrl;
+                deleteSubmissionPart1File(docId, audioUrl);
+            }
+        });
+
+        // Initialize Firebase on window load
+        window.onload = initializeFirebase;
+
+    </script>
+</body>
 </html>
