@@ -56,6 +56,7 @@
             <!-- Authentication Status -->
             <div id="authStatus" class="text-center text-sm text-gray-500 mb-4">
                 <span id="userIdDisplay"></span>
+                <button id="logoutButton" class="btn-danger ml-4">ออกจากระบบ</button>
             </div>
 
             <hr class="my-8 border-t-2 border-gray-200">
@@ -115,6 +116,8 @@
         const loadingElement = document.getElementById('loading');
         const messageElement = document.getElementById('message');
         const userIdDisplay = document.getElementById('userIdDisplay');
+        const logoutButton = document.getElementById('logoutButton');
+
 
         // Submissions_part1 Section DOM
         const submissionPart1FilesContainer = document.getElementById('submissionPart1FilesContainer');
@@ -400,6 +403,19 @@
                 deleteSubmissionPart1File(docId, audioUrl);
             }
         });
+
+        // Add a logout function
+        logoutButton.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                showMessage('ออกจากระบบเรียบร้อยแล้ว!', 'success');
+                window.location.href = 'login.html'; // Redirect to login page after logout
+            } catch (error) {
+                console.error("Error signing out:", error);
+                showMessage(`ข้อผิดพลาดในการออกจากระบบ: ${error.message}`, 'error');
+            }
+        });
+
 
         // Initialize Firebase on window load
         window.onload = initializeFirebase;
