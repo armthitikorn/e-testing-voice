@@ -209,12 +209,24 @@
         async function initializeFirebase() {
             showLoading();
             try {
-                // Get Firebase config and app ID from global variables
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                // *** Firebase Configuration ของคุณ ***
+                // คุณสามารถคัดลอกค่าเหล่านี้ได้จากโปรเจกต์ Firebase ของคุณ
+                // ไปที่ Firebase Console -> Project settings (ไอคอนรูปเฟือง) -> General -> เลื่อนลงมาที่ "Your apps"
+                // เลือก Web app ของคุณ -> คลิก "Config"
+                const firebaseConfig = {
+                  apiKey: "AIzaSyA4OrZERUoxWPiShCEWVvz1MK9cYGO3_K8",
+                  authDomain: "new-record-3ccd6.firebaseapp.com",
+                  databaseURL: "https://new-record-3ccd6-default-rtdb.firebaseio.com",
+                  projectId: "new-record-3ccd6",
+                  storageBucket: "new-record-3ccd6.firebasestorage.app",
+                  messagingSenderId: "1065863160189",
+                  appId: "1:1065863160189:web:25313e55b0733f5e126c14",
+                  measurementId: "G-JW6N2HYR58"
+                };
+                // ******************************************************
 
-                if (Object.keys(firebaseConfig).length === 0) {
-                    throw new Error("Firebase configuration is missing or empty.");
+                if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.apiKey) {
+                    throw new Error("Firebase configuration is missing or empty. Please update firebaseConfig with your project details.");
                 }
 
                 // Initialize Firebase app
@@ -237,12 +249,9 @@
                         currentUserId = null;
                         userIdDisplay.textContent = 'กำลังเข้าสู่ระบบ...';
                         console.log("User not authenticated, signing in anonymously.");
-                        // Attempt to sign in with custom token if available, otherwise anonymously
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                            await signInWithCustomToken(auth, __initial_auth_token);
-                        } else {
-                            await signInAnonymously(auth);
-                        }
+                        // สำหรับ GitHub Pages หรือสภาพแวดล้อมที่ไม่ใช่ Canvas จะใช้ signInAnonymously() เสมอ
+                        // เพื่อหลีกเลี่ยงข้อผิดพลาดที่เกิดจาก __initial_auth_token ที่ไม่มีอยู่จริง
+                        await signInAnonymously(auth);
                         hideLoading();
                         isAuthReady = true;
                     }
