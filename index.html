@@ -106,9 +106,7 @@
     <button id="backBtn" class="back-button hidden" onclick="showMainMenu()">กลับสู่เมนูหลัก</button>
 
     <script>
-        // ***************************************************************
-        //  ✅ ตำแหน่งที่ถูกต้องของตัวแปร scripts ต้องอยู่ภายในแท็ก <script>
-        // ***************************************************************
+        // ข้อมูลสคริปต์ 90 ข้อ (คงเดิม)
         const scripts = [
             // ====================================================================
             // Part 1: ข้อโต้แย้งการปฏิเสธของลูกค้า (1-30)
@@ -166,7 +164,7 @@
             },
             { 
                 q: "เบี้ยประกันมันแพงไปหน่อยนะ", 
-                a: "ถ้าตัดความคุ้มครองส่วนที่ไม่จำเป็นออกไป และเหลือไว้แค่ [ระบุจุดสำคัญ] ที่คุณลูกค้าต้องการที่สุด เบี้ยจะลดลงเหลือ [ระบุเบี้ยที่ลดลง] บาท สนใจแบบนี้ไหมครับ?", 
+                a: "ถ้าตัดความคุ้มครองส่วนที่ไม่จำเป็นออกไป และเหลือไว้แค่ [ระบุจุดสำคัญ เช่น ค่าห้อง/ค่ารักษา] ที่คุณลูกค้าต้องการที่สุด เบี้ยจะลดลงเหลือ [ระบุเบี้ยที่ลดลง] บาท สนใจแบบนี้ไหมครับ?", 
                 part: 1, 
                 audioUrl: 'https://wzwyotzzxycqfwercakh.supabase.co/storage/v1/object/public/responses/UUID_PLACEHOLDER/part1/q9_FILENAME_PLACEHOLDER.webm' 
             },
@@ -668,7 +666,7 @@
             }
         ];
         
-        // ฟังก์ชันแสดง/ซ่อนส่วนต่างๆ
+        // ฟังก์ชันแสดง/ซ่อนส่วนต่างๆ (คงเดิม)
         function showPart(partId) {
             document.getElementById('mainMenu').classList.add('hidden');
             document.getElementById('backBtn').classList.remove('hidden');
@@ -683,7 +681,7 @@
             document.getElementById('part3').classList.add('hidden');
         }
 
-        // ฟังก์ชันสร้างรายการคำถาม
+        // ฟังก์ชันสร้างรายการคำถาม (ปรับปรุงเพื่อไม่สร้าง Audio Player ทันที)
         function generateQuestions() {
             scripts.forEach((script, index) => {
                 const itemHtml = `
@@ -694,21 +692,22 @@
                         <button class="answer-button" onclick="toggleAnswer('answer-${index}')">
                             พนักงาน: ดูสคริปต์/ฟังเสียง
                         </button>
-                        <div id="answer-${index}" class="answer-area">
+                        <div id="answer-${index}" class="answer-area" data-audio-url="${script.audioUrl || ''}">
                             <p><strong>พนักงาน:</strong> ${script.a}</p>
-                            ${script.audioUrl ? `<audio controls src="${script.audioUrl}"></audio>` : '<p style="color: red;">ไม่พบ URL ไฟล์เสียง</p>'}
-                        </div>
+                            </div>
                     </div>
                 `;
                 document.getElementById(`part${script.part}`).innerHTML += itemHtml;
             });
         }
 
-        // ฟังก์ชันแสดง/ซ่อนคำตอบและเล่นเสียง
+        // ฟังก์ชันแสดง/ซ่อนคำตอบและเล่นเสียง (ปรับปรุงให้สร้าง Audio Player แบบ Dynamic)
         function toggleAnswer(answerId) {
             const answerDiv = document.getElementById(answerId);
-            const audioEl = answerDiv ? answerDiv.querySelector('audio') : null;
-
+            // ตรวจสอบว่ามี Audio Element อยู่แล้วหรือไม่
+            let audioEl = answerDiv.querySelector('audio');
+            const audioUrl = answerDiv.getAttribute('data-audio-url'); 
+            
             if (answerDiv.style.display === 'block') {
                 // ซ่อน
                 answerDiv.style.display = 'none';
@@ -721,7 +720,7 @@
                 const currentPartId = answerDiv.closest('.question-list').id;
                 document.getElementById(currentPartId).querySelectorAll('.question-item').forEach(item => {
                     const otherAnswerDiv = item.querySelector('.answer-area');
-                    const otherAudioEl = item.querySelector('audio');
+                    const otherAudioEl = otherAnswerDiv ? otherAnswerDiv.querySelector('audio') : null;
                     
                     if (otherAnswerDiv.id !== answerId) {
                         otherAnswerDiv.style.display = 'none';
@@ -732,13 +731,23 @@
                     }
                 });
                 
-                // 2. แสดงสคริปต์และเล่นเสียงที่เลือก
+                // 2. แสดงสคริปต์
                 answerDiv.style.display = 'block';
-                // ตรวจสอบว่ามีไฟล์เสียงหรือไม่ ก่อนทำการเล่น
-                if (audioEl && audioEl.src) {
-                   audioEl.play().catch(error => {
+
+                if (audioUrl) {
+                    if (!audioEl) {
+                        // **สร้าง Audio Element เฉพาะเมื่อยังไม่มี**
+                        audioEl = document.createElement('audio');
+                        audioEl.controls = true;
+                        audioEl.src = audioUrl;
+                        answerDiv.appendChild(audioEl);
+                    }
+                    
+                    // เล่นเสียง
+                    audioEl.play().catch(error => {
                         console.error('Error playing audio. Ensure URL is correct and file is accessible (CORS/Public Access):', error);
-                        alert('ไม่สามารถเล่นไฟล์เสียงได้! โปรดตรวจสอบ URL หรือสิทธิ์การเข้าถึงไฟล์ (CORS/Public Access) จาก Supabase.');
+                        // เปลี่ยน alert ให้ละเอียดขึ้น
+                        alert('ไม่สามารถเล่นไฟล์เสียงได้! โปรดตรวจสอบ URL ของไฟล์เสียง หรือสิทธิ์การเข้าถึงไฟล์ (CORS/Public Access) จาก Supabase');
                     });
                 } else {
                      alert('ไม่พบ URL ไฟล์เสียงสำหรับข้อนี้');
